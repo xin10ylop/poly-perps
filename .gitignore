@@ -1,0 +1,15 @@
+data/pm/
+data/hl/
+data/ws/
+data/cb/
+data/ladders/
+data/touch/
+data/updown/
+data/updown_trades/
+data/live15/
+data/logs/
+data/*.parquet
+data/gamma/
+data/other/
+__pycache__/
+*.pyc
