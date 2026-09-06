@@ -16,8 +16,8 @@ def write(kind,obj):
     with lock: f=fh(kind); f.write(json.dumps(obj)+"\n"); f.flush()
 def current_markets():
     now=int(time.time()); out=[]
-    for asset,step in (('btc',900),('eth',900),('btc',14400),('eth',14400)):
-        tf='15m' if step==900 else '4h'
+    for asset,step in (('btc',900),('eth',900),('btc',14400),('eth',14400),('btc',300),('eth',300),('sol',300),('xrp',300),('sol',900),('xrp',900)):
+        tf={900:'15m',14400:'4h',300:'5m'}[step]
         for k in (0,1):
             t=(now//step)*step+k*step; slug=f"{asset}-updown-{tf}-{t}"
             try:
@@ -46,7 +46,7 @@ def clob_ws():
                         except: j={"raw":msg}
                         write('clob',dict(rt=time.time(),m=j))
                 except websocket.WebSocketTimeoutException: pass
-                if time.time()-last_refresh>60:
+                if time.time()-last_refresh>30:
                     last_refresh=time.time()
                     for mk in current_markets():
                         if mk['slug'] not in subscribed: sub(mk); subscribed.add(mk['slug']); write('markets',dict(rt=time.time(),**mk))
@@ -55,12 +55,12 @@ def clob_ws():
             print("clob ws err",e,flush=True); time.sleep(3)
 def coinbase_poll():
     while True:
-        for prod in ('BTC-USD','ETH-USD'):
+        for prod in ('BTC-USD','ETH-USD','SOL-USD','XRP-USD'):
             try:
                 r=requests.get(f"https://api.exchange.coinbase.com/products/{prod}/ticker",timeout=5).json()
                 write('cb',dict(rt=time.time(),prod=prod,bid=r.get('bid'),ask=r.get('ask'),price=r.get('price'),time=r.get('time')))
             except Exception as e: pass
-        time.sleep(1.0)
+        time.sleep(0.5)
 def pm_bbo():
     while True:
         try:

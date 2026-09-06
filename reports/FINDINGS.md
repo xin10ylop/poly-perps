@@ -101,6 +101,39 @@ this report says so plainly rather than dressing it up.
 - Rewards (C) need a quoting bot; without it every market except SP500 is net negative at 1-second latency.
 - Everything in the "Nothing"/"Fee sink" rows is either bot-only (sub-second) or negative for takers after fees.
 
+
+## Follow-up: short-horizon binaries (5m / 15m / 4h) and "who actually makes money"
+
+Requested check: the crypto 5-minute and 15-minute up/down markets, alone and paired with perps, and whether anyone earns
+percent-per-day returns there. Data: 2.9M trades in 15m/4h BTC/ETH markets over 32 days (3,446 markets, 17,196 wallets,
+$39.6M) and 1.25M trades in 5m BTC/SOL markets over 6 days (1,992 markets, 12,214 wallets, $17.9M; ETH/XRP still pulling).
+
+| Arena | Taker notional/day | Takers after fees | Fees | Takers pre-fee | Makers (gross + 20 % rebate) |
+|---|---|---|---|---|---|
+| 15m + 4h (32 days) | $1.24M | −$18.4k/day (−1.49 %) | $25.5k/day | +$7.1k/day | ≈ −$2k/day |
+| 5m (6 days) | $2.98M | −$62.3k/day (−2.09 %) | $57.8k/day | −$4.5k/day | ≈ +$16k/day |
+
+- Every taker cohort loses in 5m markets, including the 67 wallets with more than 2,000 trades (−0.63 %); wallets with
+  fewer than 20 trades lose 9.75 %. In 15m markets the big bots are +2.0 % pre-fee and −0.36 % after fees.
+- The most consistent wallet in 32 days of 15m markets is a two-sided market-making bot: 1,013 fills/day, 16-share
+  clips, both directions in 91 % of markets, $157/day on $13.8k/day of turnover (1.2 %/day of turnover, 84 % of days
+  positive, Sharpe 0.76). Second best: $146/day on $27k/day, buying the near-certain side at 96 c (+0.2 % edge).
+  Nobody in 17,196 wallets makes percent-per-day returns on meaningful capital for more than a few days.
+- Underdog pocket: in 15m markets, buying the side priced ≤10 c in the last 5 minutes returned +28 % per dollar
+  ($55k on $198k over 31 days, ≈ $1.8k/day for all buyers combined), because the favourite priced 96.8 c at 90–120 s
+  before the end still lost 4.8 % of the time. But it is a lottery (39 % of days positive; bootstrap over independent
+  markets spans −0 % to +59 %), the edge exists only below ~4 c where notional is ~$900/day, and in 5m markets the same
+  trade returned −14 % with zero favourite flips in the last 60 s. Not robust.
+- 4h markets: takers +0.96 % after fees over 82 markets, all in underdog buys under 30 c and the last hour; ≈ $800/day
+  for all takers combined.
+- Paired with perps: the perps/spot feed is the fair-value reference every bot already uses. Binary prices do not lead
+  spot (residual vs remaining move, corr 0.03; a perps trade on it nets −6.6 bps). Delta-hedging a fairly priced binary
+  only adds hedge cost; hedging the favourite does not rescue a −0.55 % trade.
+
+Bottom line for percent-per-day expectations: the structural money in these markets is $25–58k/day of fees to Polymarket
+and a maker pool of roughly $16k/day in 5m markets shared by market-making bots. Taker strategies of any kind are negative
+in aggregate; the best documented bot makes low hundreds of dollars a day.
+
 ## Suggested next step
 Paper-trade A and B for 4 weeks with real passive entries, logging realized funding on both legs and basis at entry/exit;
 the go/no-go is whether realized carry stays above 8 %/yr on notional after costs. Re-run `src/` weekly: the venue is
