@@ -14,3 +14,5 @@ data/other/
 __pycache__/
 *.pyc
 data/hlmids/
+data/updown5m/
+data/updown5m_trades/
