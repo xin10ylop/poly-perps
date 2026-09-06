@@ -13,3 +13,4 @@ data/gamma/
 data/other/
 __pycache__/
 *.pyc
+data/hlmids/
